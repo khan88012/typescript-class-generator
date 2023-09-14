@@ -40,18 +40,19 @@ export function activate(context: vscode.ExtensionContext) {
 		let count = 1;
 		let propertiesDatatype: PropertyDatatype[]=[];
 
-		let datatype : string | (string | undefined);
+		let datatype : string |  undefined;
 		
 		let property = await vscode.window.showInputBox(
 			{
-				prompt: `Property #${count}? ('done' when finished)`
+				prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
 				
 			}
 		);
+		console.log("property is", +property!);
 		if(!property)
 		{
 			vscode.window.showErrorMessage("you have not provided any property name");
-			
+			datatype='';
 		}
 
 		else{
@@ -66,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
 		
 		
 		
-		while(property!== "done" && datatype!== "done")
+		while(property && datatype)
 		{
 			propertiesDatatype.push(new PropertyDatatype());
 
@@ -76,13 +77,13 @@ export function activate(context: vscode.ExtensionContext) {
 			count++;
 			property = await vscode.window.showInputBox(
 				{
-					prompt: `Property #${count}? ('done' when finished)`
+					prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
 				}
 			);
 			if(!property)
 			{
 				vscode.window.showErrorMessage("you have not provided any property name");
-				
+				datatype ='';
 			}
 	
 			else{

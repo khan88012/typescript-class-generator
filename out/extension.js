@@ -34,26 +34,29 @@ function activate(context) {
         let propertiesDatatype = [];
         let datatype;
         let property = await vscode.window.showInputBox({
-            prompt: `Property #${count}? ('done' when finished)`
+            prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
         });
+        console.log("property is", +property);
         if (!property) {
             vscode.window.showErrorMessage("you have not provided any property name");
+            datatype = '';
         }
         else {
             datatype = await vscode.window.showInputBox({
                 prompt: `datatype for property number #${count}`
             });
         }
-        while (property !== "done" && datatype !== "done") {
+        while (property && datatype) {
             propertiesDatatype.push(new property_datatype_1.PropertyDatatype());
             propertiesDatatype[count - 1].property = property;
             propertiesDatatype[count - 1].datatype = datatype;
             count++;
             property = await vscode.window.showInputBox({
-                prompt: `Property #${count}? ('done' when finished)`
+                prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
             });
             if (!property) {
                 vscode.window.showErrorMessage("you have not provided any property name");
+                datatype = '';
             }
             else {
                 datatype = await vscode.window.showInputBox({
