@@ -45,6 +45,10 @@ function activate(context) {
             datatype = await vscode.window.showInputBox({
                 prompt: `datatype for property number #${count}`
             });
+            if (!datatype) {
+                vscode.window.showErrorMessage("data type was not provided");
+                property = '';
+            }
         }
         while (property && datatype) {
             propertiesDatatype.push(new property_datatype_1.PropertyDatatype());

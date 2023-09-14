@@ -61,6 +61,12 @@ export function activate(context: vscode.ExtensionContext) {
 					prompt: `datatype for property number #${count}`
 				}
 			);
+			if(!datatype)
+			{
+			vscode.window.showErrorMessage("data type was not provided");
+
+				property='';
+			}
 		}
 
 		
