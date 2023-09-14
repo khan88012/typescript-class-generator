@@ -4,6 +4,7 @@ exports.deactivate = exports.activate = void 0;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
+const property_datatype_1 = require("./property-datatype");
 const fs = require("fs");
 const path = require("path");
 // This method is called when your extension is activated
@@ -30,31 +31,40 @@ function activate(context) {
             return;
         }
         let count = 1;
+        let propertiesDatatype = [];
+        let datatype;
         let property = await vscode.window.showInputBox({
             prompt: `Property #${count}? ('done' when finished)`
         });
-        let datatype = await vscode.window.showInputBox({
-            prompt: `datatype for property number #${count}`
-        });
-        const datatypes = [];
-        const properties = [];
-        while (property !== "done" && datatype !== "done") {
-            properties.push(property);
-            datatypes.push(datatype);
-            count++;
-            property = await vscode.window.showInputBox({
-                prompt: `Property #${count}? ('done' when finished)`
-            });
+        if (!property) {
+            vscode.window.showErrorMessage("you have not provided any property name");
+        }
+        else {
             datatype = await vscode.window.showInputBox({
                 prompt: `datatype for property number #${count}`
             });
         }
-        vscode.window.showInformationMessage("Properties received  are " + properties);
-        vscode.window.showInformationMessage("datatypes received  are " + datatypes);
+        while (property !== "done" && datatype !== "done") {
+            propertiesDatatype.push(new property_datatype_1.PropertyDatatype());
+            propertiesDatatype[count - 1].property = property;
+            propertiesDatatype[count - 1].datatype = datatype;
+            count++;
+            property = await vscode.window.showInputBox({
+                prompt: `Property #${count}? ('done' when finished)`
+            });
+            if (!property) {
+                vscode.window.showErrorMessage("you have not provided any property name");
+            }
+            else {
+                datatype = await vscode.window.showInputBox({
+                    prompt: `datatype for property number #${count}`
+                });
+            }
+        }
         const classDefinition = `class ${className}{\n`;
         let propertyWithDatatype = '\t\t';
-        for (let i = 0; i < properties.length; i++) {
-            propertyWithDatatype = propertyWithDatatype + properties[i] + ":" + datatypes[i] + ";\n\t\t";
+        for (let i = 0; i < propertiesDatatype.length; i++) {
+            propertyWithDatatype = propertyWithDatatype + propertiesDatatype[i].property + ":" + propertiesDatatype[i].datatype + ";\n\t\t";
         }
         const classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
         console.log(classString);
