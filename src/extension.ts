@@ -20,7 +20,19 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello, This is Typescript Class Generator!');
-
+		let dataTypes: string[] = [
+			"number",
+			"string",
+			"boolean",
+			"Array",
+			"Tuple",
+			"Enum",
+			"any",
+			"void",
+		];
+		
+		console.log(dataTypes);
+		
 		if(!vscode.workspace.workspaceFolders)
 		{
 			return vscode.window.showErrorMessage("Please open a directory before creating a class");
@@ -38,9 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		let count = 1;
+		let validInput = false;
 		let propertiesDatatype: PropertyDatatype[]=[];
 
-		let datatype : string |  undefined;
+		let datatype : string ;
 		
 		let property = await vscode.window.showInputBox(
 			{
@@ -56,11 +69,25 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		else{
-			datatype = await vscode.window.showInputBox(
+
+				
+			do{
+				datatype = await vscode.window.showInputBox(
+					{
+						prompt: `datatype for property number #${count}`
+					}
+				)||'';
+				if(dataTypes.includes(datatype))
 				{
-					prompt: `datatype for property number #${count}`
+					validInput = true;
 				}
-			);
+				else{
+			    vscode.window.showErrorMessage("Please provide a correct datatype");
+
+					validInput = false;
+				}
+			}while (!validInput);
+
 			if(!datatype)
 			{
 			vscode.window.showErrorMessage("data type was not provided");
@@ -93,11 +120,24 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 	
 			else{
-				datatype = await vscode.window.showInputBox(
+				do{
+					datatype = await vscode.window.showInputBox(
+						{
+							prompt: `datatype for property number #${count}`
+						}
+					)||'';
+					if(dataTypes.includes(datatype))
 					{
-						prompt: `datatype for property number #${count}`
+						validInput = true;
 					}
-				);
+					else
+					{
+						vscode.window.showErrorMessage("Please provide a correct datatype");
+
+						validInput = false;
+
+					}
+				}while (!validInput);
 			}
 
 		}

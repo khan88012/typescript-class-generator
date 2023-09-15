@@ -20,6 +20,17 @@ function activate(context) {
         // The code you place here will be executed every time your command is executed
         // Display a message box to the user
         vscode.window.showInformationMessage('Hello, This is Typescript Class Generator!');
+        let dataTypes = [
+            "number",
+            "string",
+            "boolean",
+            "Array",
+            "Tuple",
+            "Enum",
+            "any",
+            "void",
+        ];
+        console.log(dataTypes);
         if (!vscode.workspace.workspaceFolders) {
             return vscode.window.showErrorMessage("Please open a directory before creating a class");
         }
@@ -31,6 +42,7 @@ function activate(context) {
             return;
         }
         let count = 1;
+        let validInput = false;
         let propertiesDatatype = [];
         let datatype;
         let property = await vscode.window.showInputBox({
@@ -42,9 +54,18 @@ function activate(context) {
             datatype = '';
         }
         else {
-            datatype = await vscode.window.showInputBox({
-                prompt: `datatype for property number #${count}`
-            });
+            do {
+                datatype = await vscode.window.showInputBox({
+                    prompt: `datatype for property number #${count}`
+                }) || '';
+                if (dataTypes.includes(datatype)) {
+                    validInput = true;
+                }
+                else {
+                    vscode.window.showErrorMessage("Please provide a correct datatype");
+                    validInput = false;
+                }
+            } while (!validInput);
             if (!datatype) {
                 vscode.window.showErrorMessage("data type was not provided");
                 property = '';
@@ -63,9 +84,18 @@ function activate(context) {
                 datatype = '';
             }
             else {
-                datatype = await vscode.window.showInputBox({
-                    prompt: `datatype for property number #${count}`
-                });
+                do {
+                    datatype = await vscode.window.showInputBox({
+                        prompt: `datatype for property number #${count}`
+                    }) || '';
+                    if (dataTypes.includes(datatype)) {
+                        validInput = true;
+                    }
+                    else {
+                        vscode.window.showErrorMessage("Please provide a correct datatype");
+                        validInput = false;
+                    }
+                } while (!validInput);
             }
         }
         const classDefinition = `class ${className}{\n`;
