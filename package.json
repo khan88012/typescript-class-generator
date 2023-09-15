@@ -3,6 +3,7 @@
   "displayName": "Typescript Class Generator",
   "description": "This is a class generator for typescript with properties.",
   "version": "0.0.1",
+  "publisher": "Asif-Khan-3101",
   "engines": {
     "vscode": "^1.82.0"
   },
