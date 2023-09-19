@@ -45,6 +45,7 @@ function activate(context) {
         let validInput = false;
         let propertiesDatatype = [];
         let datatype;
+        let isConstructorNeeded;
         let property = await vscode.window.showInputBox({
             prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
         });
@@ -70,6 +71,7 @@ function activate(context) {
                 vscode.window.showErrorMessage("data type was not provided");
                 property = '';
             }
+        
         }
         while (property && datatype) {
             propertiesDatatype.push(new property_datatype_1.PropertyDatatype());
@@ -80,6 +82,7 @@ function activate(context) {
                 prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
             });
             if (!property) {
+                if(!propertiesDatatype.length)
                 vscode.window.showErrorMessage("you have not provided any property name");
                 datatype = '';
             }
@@ -97,14 +100,37 @@ function activate(context) {
                     }
                 } while (!validInput);
             }
+            isConstructorNeeded = await vscode.window.showInputBox(
+                {
+                    prompt: `do you want to generate constructor as well,if yes press 'y'`
+                }
+            );
         }
         const classDefinition = `class ${className}{\n`;
         let propertyWithDatatype = '\t\t';
+        let classString;
+        let constructorString = `constructor(args: any = {}){\n\t\t`;
+        let constructorFields = '\t\t'
         for (let i = 0; i < propertiesDatatype.length; i++) {
             propertyWithDatatype = propertyWithDatatype + propertiesDatatype[i].property + ":" + propertiesDatatype[i].datatype + ";\n\t\t";
         }
-        const classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
+         classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
         console.log(classString);
+
+
+        if(isConstructorNeeded==='y')
+        {
+             for (let i = 0; i < propertiesDatatype.length; i++) {
+                constructorFields = constructorFields+ 'this.'  + propertiesDatatype[i].property + '= args.'+ propertiesDatatype[i].property + "\n\t\t";
+             }
+             classString = `${classDefinition} ${propertyWithDatatype} ${constructorString} ${constructorFields} \n\t}`
+        }
+
+
+
+
+
+
         vscode.window.showInformationMessage("class definition " + classString);
         const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath
             .toString();
