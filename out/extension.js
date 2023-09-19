@@ -100,12 +100,13 @@ function activate(context) {
                     }
                 } while (!validInput);
             }
-            isConstructorNeeded = await vscode.window.showInputBox(
-                {
-                    prompt: `do you want to generate constructor as well,if yes press 'y'`
-                }
-            );
+
         }
+        isConstructorNeeded = await vscode.window.showInputBox(
+            {
+                prompt: `do you want to generate constructor as well,if yes press 'y'`
+            }
+        );
         const classDefinition = `class ${className}{\n`;
         let propertyWithDatatype = '\t\t';
         let classString;
