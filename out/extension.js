@@ -100,12 +100,13 @@ function activate(context) {
                     }
                 } while (!validInput);
             }
-            isConstructorNeeded = await vscode.window.showInputBox(
-                {
-                    prompt: `do you want to generate constructor as well,if yes press 'y'`
-                }
-            );
+
         }
+        isConstructorNeeded = await vscode.window.showInputBox(
+            {
+                prompt: `do you want to generate constructor as well,if yes press 'y'`
+            }
+        );
         const classDefinition = `class ${className}{\n`;
         let propertyWithDatatype = '\t\t';
         let classString;
@@ -123,7 +124,7 @@ function activate(context) {
              for (let i = 0; i < propertiesDatatype.length; i++) {
                 constructorFields = constructorFields+ 'this.'  + propertiesDatatype[i].property + '= args.'+ propertiesDatatype[i].property + "\n\t\t";
              }
-             classString = `${classDefinition} ${propertyWithDatatype} ${constructorString} ${constructorFields} \n\t}`
+             classString = `${classDefinition} ${propertyWithDatatype} ${constructorString} ${constructorFields} }\n\t}`
         }
 
 
