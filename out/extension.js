@@ -1,24 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
 const property_datatype_1 = require("./property-datatype");
 const fs = require("fs");
 const path = require("path");
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 function activate(context) {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "typescript-class-generator" is now active!');
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with registerCommand
-    // The commandId parameter must match the command field in package.json
     let disposable = vscode.commands.registerCommand('typescript-class-generator.createTsClass', async () => {
-        // The code you place here will be executed every time your command is executed
-        // Display a message box to the user
         vscode.window.showInformationMessage('Hello, This is Typescript Class Generator!');
         let dataTypes = [
             "number",
@@ -30,26 +18,26 @@ function activate(context) {
             "any",
             "void",
         ];
-        console.log(dataTypes);
-        if (!vscode.workspace.workspaceFolders) {
-            return vscode.window.showErrorMessage("Please open a directory before creating a class");
-        }
-        const className = await vscode.window.showInputBox({
-            prompt: "Class Name?"
-        });
-        if (!className) {
-            vscode.window.showErrorMessage("you have not provided any class name");
-            return;
-        }
+        let className;
         let count = 1;
         let validInput = false;
         let propertiesDatatype = [];
         let datatype;
         let isConstructorNeeded;
+        if (!vscode.workspace.workspaceFolders) {
+            return vscode.window.showErrorMessage("Please open a directory before creating a class");
+        }
+        className = await vscode.window.showInputBox({
+            prompt: "Class Name?"
+        }) || '';
+        className = className.charAt(0).toUpperCase() + className.slice(1);
+        if (!className?.trim()) {
+            vscode.window.showErrorMessage("you have not provided any class name");
+            return;
+        }
         let property = await vscode.window.showInputBox({
             prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
         });
-        console.log("property is", +property);
         if (!property) {
             vscode.window.showErrorMessage("you have not provided any property name");
             datatype = '';
@@ -111,7 +99,6 @@ function activate(context) {
             propertyWithDatatype = propertyWithDatatype + propertiesDatatype[i].property.trim() + ":" + propertiesDatatype[i].datatype.trim() + ";\n\t\t";
         }
         classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
-        console.log(classString);
         if (isConstructorNeeded === 'y') {
             for (let i = 0; i < propertiesDatatype.length; i++) {
                 constructorFields = constructorFields + 'this.' + propertiesDatatype[i].property.trim() + ' = args.' + propertiesDatatype[i].property.trim() + "\n\t\t\t\t";
@@ -122,7 +109,6 @@ function activate(context) {
         const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath
             .toString();
         ;
-        console.log("the path is", folderPath);
         vscode.window.showInformationMessage("folder path " + folderPath);
         fs.writeFile(path.join(folderPath, `${className}.ts`), classString, () => { });
         fs.writeFile(path.join(folderPath, `${className}.ts`), classString, (err) => {
