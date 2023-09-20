@@ -54,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 		let propertiesDatatype: PropertyDatatype[]=[];
 
 		let datatype : string ;
-		
+		let isConstructorNeeded;
 		let property = await vscode.window.showInputBox(
 			{
 				prompt: `Property #${count}? (keep the input box empty and press enter when finished)`
@@ -141,21 +141,35 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 
 		}
-	
+		isConstructorNeeded = await vscode.window.showInputBox(
+            {
+                prompt: `do you want to generate constructor as well,if yes press 'y'`
+            }
+        );
 
 		const classDefinition = `class ${className}{\n`;
 		let propertyWithDatatype ='\t\t';
+		let classString;
+        let constructorString = `constructor(args: any = {}){\n\t\t`;
+        let constructorFields = '\t\t'
 		for (let i = 0; i < propertiesDatatype.length; i++) {
 			propertyWithDatatype = propertyWithDatatype + propertiesDatatype[i].property+ ":" + propertiesDatatype[i].datatype +";\n\t\t" ;
 		  }
 
-		const classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
+		 classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
 		console.log(classString);
 
 
 
 
 
+        if(isConstructorNeeded==='y')
+        {
+             for (let i = 0; i < propertiesDatatype.length; i++) {
+                constructorFields = constructorFields+ 'this.'  + propertiesDatatype[i].property + '= args.'+ propertiesDatatype[i].property + "\n\t\t";
+             }
+             classString = `${classDefinition} ${propertyWithDatatype} ${constructorString} ${constructorFields} }\n\t}`
+        }
 
 
 		
