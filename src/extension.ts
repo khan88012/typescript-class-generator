@@ -151,9 +151,9 @@ export function activate(context: vscode.ExtensionContext) {
 		let propertyWithDatatype ='\t\t';
 		let classString;
         let constructorString = `constructor(args: any = {}){\n\t\t`;
-        let constructorFields = '\t\t'
+        let constructorFields = '\t\t';
 		for (let i = 0; i < propertiesDatatype.length; i++) {
-			propertyWithDatatype = propertyWithDatatype + propertiesDatatype[i].property+ ":" + propertiesDatatype[i].datatype +";\n\t\t" ;
+			propertyWithDatatype = propertyWithDatatype + propertiesDatatype[i].property.trim()+ ":" + propertiesDatatype[i].datatype.trim() +";\n\t\t" ;
 		  }
 
 		 classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
@@ -166,9 +166,9 @@ export function activate(context: vscode.ExtensionContext) {
         if(isConstructorNeeded==='y')
         {
              for (let i = 0; i < propertiesDatatype.length; i++) {
-                constructorFields = constructorFields+ 'this.'  + propertiesDatatype[i].property + '= args.'+ propertiesDatatype[i].property + "\n\t\t";
+                constructorFields = constructorFields+ 'this.'  + propertiesDatatype[i].property.trim() + ' = args.'+ propertiesDatatype[i].property.trim() + "\n\t\t\t\t";
              }
-             classString = `${classDefinition} ${propertyWithDatatype} ${constructorString} ${constructorFields} }\n\t}`
+             classString = `${classDefinition} ${propertyWithDatatype} ${constructorString} ${constructorFields} }\n\t}`;
         }
 
 
