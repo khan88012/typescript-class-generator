@@ -1,8 +1,8 @@
 {
   "name": "typescript-class-generator",
   "displayName": "Typescript Class Generator",
-  "description": "This extension let's create class by accepting properties and datatypes, also generates consturctor.",
-  "version": "0.0.4",
+  "description": "This extension lets us create class by accepting properties and datatypes, also generates constructor.",
+  "version": "0.0.5",
   "publisher": "Asif-Khan-3101",
   "engines": {
     "vscode": "^1.82.0"
