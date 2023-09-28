@@ -6,12 +6,19 @@ const property_datatype_1 = require("./property-datatype");
 const fs = require("fs");
 const path = require("path");
 function activate(context) {
-    let disposable = vscode.commands.registerCommand("typescript-class-generator.createTsClass", async () => {
-        vscode.window.showInformationMessage("Hello, This is Typescript Class Generator!");
+    let disposable = vscode.commands.registerCommand("typescript-class-generator.createClass", async () => {
+        vscode.window.showInformationMessage("Hello, This is Model Class Generator!");
         const languages = ["Typescript", "Python"];
         const language = await vscode.window.showQuickPick(languages, {
-            placeHolder: "Select the view to show when opening a window.",
+            placeHolder: "Select the language.",
         });
+        const options = {
+            canSelectFiles: false,
+            canSelectFolders: true,
+            canSelectMany: false,
+            openLabel: 'Open Folder',
+        };
+        let newFolderPath;
         let dataTypes = [
             "number",
             "string",
@@ -37,6 +44,16 @@ function activate(context) {
             return vscode.window.showErrorMessage("Please open a directory before creating a class");
         }
         if (language) {
+            await vscode.window.showOpenDialog(options).then((uri) => {
+                if (uri && uri.length > 0) {
+                    // User selected one or more files
+                    newFolderPath = uri[0].fsPath;
+                }
+                else {
+                    // User canceled the dialog
+                    console.log('Dialog canceled by the user.');
+                }
+            });
             className =
                 (await vscode.window.showInputBox({
                     prompt: "Class Name?",
@@ -155,7 +172,13 @@ function activate(context) {
                 classString = `${classDefinition}${constructorDefinition} ${constructorAssignments}${classGetters}${dunderStrString}`;
             }
             vscode.window.showInformationMessage("class definition " + classString);
-            const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath.toString();
+            let folderPath;
+            if (newFolderPath) {
+                folderPath = newFolderPath;
+            }
+            else {
+                folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath.toString();
+            }
             vscode.window.showInformationMessage("folder path " + folderPath);
             fs.writeFile(path.join(folderPath, `${className}${extension}`), classString, () => { });
             fs.writeFile(path.join(folderPath, `${className}${extension}`), classString, (err) => {
