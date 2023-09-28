@@ -58,10 +58,8 @@ export function activate(context: vscode.ExtensionContext) {
       if (language) {
       await  vscode.window.showOpenDialog(options).then( (uri) => {
           if (uri && uri.length > 0) {
-              // User selected one or more files
            newFolderPath  = uri[0].fsPath;
           } else {
-              // User canceled the dialog
               console.log('Dialog canceled by the user.');
           }
       });
@@ -179,14 +177,14 @@ export function activate(context: vscode.ExtensionContext) {
         } else {
           extension = ".py";
           let property = await vscode.window.showInputBox({
-            prompt: `Property #${count}? ('done' when finished)`,
+            prompt: `Property #${count}? (keep the inputbox empty and press 'Enter' when finished)`,
           });
           const properties = [];
-          while (property !== "done") {
+          while (property) {
             properties.push(property);
             count++;
             property = await vscode.window.showInputBox({
-              prompt: `Property #${count}? ('done' when finished)`,
+              prompt: `Property #${count}? (keep the inputbox empty and press 'Enter' when finished)`,
             });
           }
           vscode.window.showInformationMessage(
