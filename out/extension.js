@@ -8,6 +8,10 @@ const path = require("path");
 function activate(context) {
     let disposable = vscode.commands.registerCommand("typescript-class-generator.createTsClass", async () => {
         vscode.window.showInformationMessage("Hello, This is Typescript Class Generator!");
+        const languages = ["Typescript", "Python"];
+        const language = await vscode.window.showQuickPick(languages, {
+            placeHolder: "Select the view to show when opening a window.",
+        });
         let dataTypes = [
             "number",
             "string",
@@ -24,7 +28,6 @@ function activate(context) {
         let propertiesDatatype = [];
         let datatype;
         let isConstructorNeeded;
-        let classChoice;
         let extension;
         let propertyWithDatatype = "\t\t";
         let classString;
@@ -33,11 +36,7 @@ function activate(context) {
         if (!vscode.workspace.workspaceFolders) {
             return vscode.window.showErrorMessage("Please open a directory before creating a class");
         }
-        classChoice =
-            (await vscode.window.showInputBox({
-                prompt: "Enter 1 for TypeScript or 2 for Python class",
-            })) || 0;
-        if (classChoice === "1" || classChoice === "2") {
+        if (language) {
             className =
                 (await vscode.window.showInputBox({
                     prompt: "Class Name?",
@@ -47,7 +46,7 @@ function activate(context) {
                 vscode.window.showErrorMessage("you have not provided any class name");
                 return;
             }
-            if (classChoice === "1") {
+            if (language === "Typescript") {
                 extension = ".ts";
                 let property = await vscode.window.showInputBox({
                     prompt: `Property #${count}? (keep the input box empty and press enter when finished)`,
@@ -59,8 +58,8 @@ function activate(context) {
                 else {
                     do {
                         datatype =
-                            (await vscode.window.showInputBox({
-                                prompt: `datatype for property number #${count}`,
+                            (await vscode.window.showQuickPick(dataTypes, {
+                                placeHolder: "Select datatype for the property",
                             })) || "";
                         if (dataTypes.includes(datatype)) {
                             validInput = true;
@@ -90,8 +89,8 @@ function activate(context) {
                     else {
                         do {
                             datatype =
-                                (await vscode.window.showInputBox({
-                                    prompt: `datatype for property number #${count}`,
+                                (await vscode.window.showQuickPick(dataTypes, {
+                                    placeHolder: "Select datatype for the property",
                                 })) || "";
                             if (dataTypes.includes(datatype)) {
                                 validInput = true;
@@ -103,9 +102,7 @@ function activate(context) {
                         } while (!validInput);
                     }
                 }
-                isConstructorNeeded = await vscode.window.showInputBox({
-                    prompt: `do you want to generate constructor as well,if yes press 'y'`,
-                });
+                isConstructorNeeded = (await vscode.window.showQuickPick(['Yes', 'No'], { placeHolder: 'Do you want to generate constructor?' })) || '';
                 const classDefinition = `class ${className}{\n`;
                 for (let i = 0; i < propertiesDatatype.length; i++) {
                     propertyWithDatatype =
@@ -116,7 +113,7 @@ function activate(context) {
                             ";\n\t\t";
                 }
                 classString = `${classDefinition} ${propertyWithDatatype} \n\t}`;
-                if (isConstructorNeeded === "y") {
+                if (isConstructorNeeded === "Yes") {
                     for (let i = 0; i < propertiesDatatype.length; i++) {
                         constructorFields =
                             constructorFields +
